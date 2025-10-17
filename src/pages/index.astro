@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+import type { RootObject, SectionsHomeAbout } from "../interfaces/dbData";
+import BannerServices from "../components/home/BannerHome.astro";
+import HomeSectionOne from "../components/home/HomeSectionOne";
+import MapComponent from "../components/contact/Map.tsx";
+import VideoAnimado from "../components/global/video/VideoAnimado";
+import Directorios from "../components/home/Directorios";
+import ValuesHome from "../components/home/ValuesHome.astro";
+import HeroSection2 from "../components/home/HeroSection2";
+import ServicesHome from "../components/home/ServicesHome2";
+import HomeSectionTwo from "../components/home/HomeSectionTwo";
+import IconGlobal from "../components/global/IconGlobal";
+import ColorPalette from "../components/home/ColorPalette.astro";
+import HighlightedText from "../components/global/TitleColor";
+import Fireworks from "../components/home/FireWorks";
+import AboutSectionOne from "../components/about/AboutSectionOne";
+import ButtonContent from "../components/buttons/Buttons";
+
+let API_URL = import.meta.env.API_URL;
+// Realiza la llamada a la API
+const response = await fetch(`${API_URL}`);
+const data: RootObject = await response.json();
+//filtrar para obtener la section de home
+const homeSection = data?.sectionsHomeAbout.filter(
+  (section: SectionsHomeAbout) => section.section === "home",
+);
+//filtrar para obtener la section de home
+const dataBlocks = data?.sectionsHomeAbout.filter(
+  (section: SectionsHomeAbout) => section.section === "blocks",
+);
+//filtrar para obtener la section de about
+const aboutSection = data?.sectionsHomeAbout.filter(
+  (section: SectionsHomeAbout) => section.section === "about",
+);
+---
+
+<Layout
+  title={`Home | ${data.name}`}
+  description={dataBlocks[0].text}
+  favicon={data.logos.primary}
+  featuredImage={data.logos.favicon}
+  keywords={data.services.map((service) => service.title).join(", ")}
+>
+  <!-- <Slideshow data={data} client:load /> -->
+  <HeroSection2 data={data} dataBlock={dataBlocks} client:load />
+  <HomeSectionOne data={data} homeSection={homeSection} />
+  <ValuesHome data={data} />
+  
+  <ServicesHome
+    dbServices={data.services}
+    landingServices={data.widgets.landingServices}
+    dataglobal={data}
+    client:load
+  />
+  
+  
+  {
+    data.reviews.viewHome ? (
+      <div class="md:w-[75%] mx-auto w-[95%] md:py-24 py-10 flex justify-center flex-col text-center">
+        <h2 class="text-3xl font-bold text-gray-800 py-4">
+          What our customers say
+        </h2>
+        <review-widget widgetId={data.reviews.urlReviews} />
+      </div>
+    ) : null
+  }
+
+  <Directorios client:only data={data} />
+  <HomeSectionTwo data={data} homeSection={homeSection} client:load />
+  
+  
+
+  
+
+  {
+    data.videoAnimado.length > 0 ? (
+      <div>
+        <div
+          class="flex justify-center rounded-br-[50px] h-[70vh] relative "
+          style={{
+            background: `url("${data.gallery[2]}")`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        >
+          {/* Poner un overlay */}
+          <div class="bg-black bg-opacity-70 w-full h-[70vh] absolute" />
+        </div>
+        <div class="mt-[-450px] z-10 relative">
+          <VideoAnimado data={data} />
+        </div>
+      </div>
+    ) : null
+  }
+
+  {data.widgets.colorPalette ? <ColorPalette /> : null}
+
+  <AboutSectionOne data={data} aboutSection={aboutSection} client:load />
+  <div class="md:w-[80%] mx-auto w-[95%] md:py-24 py-4">
+    <div class="flex justify-center flex-col items-center mt-8">
+      <h2
+        class="text-5xl font-bold text-center text-primaryColor border-l-[8px] pl-2 border-primary"
+      >
+        Our Services
+      </h2>
+      <h3
+        class="text-3xl font-bold text-center text-primaryColor mt-4 capitalize"
+      >
+        {data.slogan[3]}
+      </h3>
+    </div>
+    <div class="flex flex-col gap-16 py-4 md:px-1 px-4">
+      {
+        data.services.map((item, index) => {
+          const isEven = index % 2 === 0;
+          return (
+            <div
+              class={`flex ${isEven ? "md:flex-row" : "md:flex-row-reverse"} flex-col md:pb-[20px] pb-[50px]`}
+            >
+              <div class="md:w-[50%] w-full flex justify-center self-center relative">
+                <img
+                  src={item.description[0].image}
+                  alt={item.title}
+                  class="md:w-full md:h-[450px] w-[350px] h-[350px] border-[10px] border-white rounded-2xl object-cover"
+                />
+                <img
+                  src="/assets/img/waves_2.png"
+                  class="w-full h-full absolute bottom-0 left-0 z-10 rounded-b-2xl"
+                  alt="waves"
+                />
+              </div>
+              <div class="md:w-[50%] w-full flex flex-col self-center md:text-start text-center md:px-6 px-2">
+                <h2 class="md:text-[30px] text-[25px] font-bold text-secondary">
+                  {item.title}
+                </h2>
+                {item.showtitletext ? (
+                  <div class="w-full">
+                    <p class="text-base"> {item.subtitle}</p>
+                  </div>
+                ) : null}
+                <div class="w-full grid grid-cols-2 gap-3 ">
+                  {item.showtitletext
+                    ? item.description.map((desc) => (
+                        <>
+                        <p class="text-base capitalize"> - {desc.titletext} {desc.text} </p>
+                        
+                        </>
+
+                      ))
+                    : null}
+                </div>
+
+                <p class="pb-3">{item.description[0].text}</p>
+                <div class="w-full flex md:justify-start justify-center">
+                  <ButtonContent
+                    titleBtn="Call Us Now"
+                    linkBtn={`tel:+1${data.dataGeneral.phones[0].number}`}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+  <MapComponent data={data} client:visible />
+</Layout>

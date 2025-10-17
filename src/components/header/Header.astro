@@ -1,0 +1,64 @@
+---
+import Menu from "../headerComponents/Menu.tsx";
+import type { RootObject } from "../../interfaces/dbData.ts";
+import MenuMobile from "../headerComponents/MenuMobile.tsx";
+import MenuToggle from "./MenuToggle";
+let API_URL = import.meta.env.API_URL;
+const response = await fetch(`${API_URL}`);
+const data: RootObject = await response.json();
+---
+
+<header class="absolute w-full z-50" transition:animate="none">
+  <div
+    class="w-full flex flex-col md:flex-row justify-end items-start mr-auto md:ml-auto"
+  >
+    <div
+      class="w-3/4 h-[90px] bg-primary hidden md:flex justify-start items-center pl-16 -ml-16 rounded-bl-3xl"
+    >
+      <div class="mr-5 z-10">
+        <Menu data={data} colorText="text-white" client:load />
+      </div>
+      {
+        data.redesSociales.length > 0 && (
+          <div class="flex justify-start gap-4">
+            {data.redesSociales.map((item) => {
+              return (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  aria-label={item.name}
+                  class="w-10 h-10 flex justify-center items-center rounded-full bg-secondary text-white"
+                >
+                  <i class={`fa-brands fa-${item.icon}`} />
+                </a>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+    <div class="w-full bg-primary md:hidden flex justify-between items-center p-3">
+      {
+        data.redesSociales.length > 0 && (
+          <div class="flex justify-center gap-2">
+            {data.redesSociales.map((item) => {
+              return (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  aria-label={item.name}
+                  class="w-10 h-10 flex justify-center items-center rounded-full bg-secondary text-white"
+                >
+                  <i class={`fa-brands fa-${item.icon}`} />
+                </a>
+              );
+            })}
+          </div>
+        )
+      }
+      <div class="w-[80px] h-auto">
+        <MenuToggle data={data} client:load />
+      </div>
+    </div>
+  </div>
+</header>

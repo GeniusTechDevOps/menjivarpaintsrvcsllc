@@ -1,0 +1,43 @@
+---
+import type { RootObject, SectionsHomeAbout } from "../interfaces/dbData";
+import Layout from "../layouts/Layout.astro";
+import ContactComponent from "../components/contact/contact.astro";
+import ContactForm from "../components/contact/Form";
+import MapComponent from "../components/contact/Map.tsx";
+import TransparentHeader from "../components/global/TransparentHeader.astro";
+
+let API_URL = import.meta.env.API_URL;
+// Realiza la llamada a la API
+const response = await fetch(`${API_URL}`);
+const data: RootObject = await response.json();
+
+//filtrar para obtener la section de home
+const dataBlocks = data?.sectionsHomeAbout.filter(
+  (section: SectionsHomeAbout) => section.section === "blocks",
+);;
+---
+
+<Layout
+  title={`Contact | ${data.name}`}
+  description={dataBlocks[0].text}
+  favicon={data.logos.primary}
+  featuredImage={data.logos.favicon}
+  keywords={data.services.map((service) => service.title).join(", ")}
+>
+  <TransparentHeader title="Contact Us" image={data.gallery[5]} />
+  <section
+    class="flex md:flex-row flex-col md:w-[70%] mx-auto w-[90%] md:mt-24 mt-10"
+  >
+    <ContactComponent data={data} />
+  </section>
+  <section
+    class="flex md:flex-row flex-col justify-end md:w-[75%] mx-auto w-[90%] md:-mt-[40%] mt-10 relative z-10"
+  >
+    <div class="md:w-[50%] flex flex-col md:p-6 bg-white shadow-2xl rounded-2xl p-2">
+      <h2 class="text-3xl font-bold mb-4">Get In Touch!</h2>
+      <ContactForm data={data} client:load />
+    </div>
+  
+  </section>
+  <MapComponent data={data} client:visible />
+</Layout>

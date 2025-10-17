@@ -1,0 +1,209 @@
+---
+import FormatText from "../../hooks/FormatText";
+import type { RootObject, SectionsHomeAbout } from "../../interfaces/dbData";
+import IconGlobal from "../global/IconGlobal";
+import HighlightedText from "../global/TitleColor";
+import GalleryFooter from "./galleryFooter.tsx";
+
+let API_URL = import.meta.env.API_URL;
+// Realiza la llamada a la API
+const response = await fetch(`${API_URL}`);
+const data: RootObject = await response.json();
+//filtrar para obtener la section de about
+const aboutSection = data?.sectionsHomeAbout.filter(
+  (section: SectionsHomeAbout) => section.section === "about",
+);
+const year = new Date().getFullYear();
+---
+
+<footer class="text-white mt-10">
+  <div
+    class="w-full bg-[url('/assets/img/banner-3.jpg')] bg-cover bg-center pt-10"
+  >
+    <div
+      class="w-4/5 mx-auto flex flex-col md:flex-row justify-center items-start gap-4 pb-5"
+    >
+      {
+        data.widgets.onePage ? (
+          <div class="w-full md:w-1/4">
+            <div>
+              <p class="text-primary font-bold text-lg">Navigation</p>
+              <div class="w-4/5 h-1 border bg-gradient-to-r from-secondary to-white/25 border-none"></div>
+            </div>
+
+            <ul class="list-none flex flex-col justify-center items-start text-black gap-6 font-bold flex-wrap pt-4">
+              <li
+                class="mx-2 flex gap-2 items-center hover:transform
+          hover:scale-110 transition-all duration-300 ease-in-out"
+              >
+                <a href="/" class="text-black">
+                  Home
+                </a>
+                <i class="fas fa-chevron-right text-[12px]" />
+              </li>
+              <li
+                class="mx-2 flex gap-2 items-center hover:transform
+          hover:scale-110 transition-all duration-300 ease-in-out"
+              >
+                <a href="/about" class="text-black">
+                  About
+                </a>
+                <i class="fas fa-chevron-right text-[12px]" />
+              </li>
+              <li
+                class="mx-2 flex gap-2 items-center hover:transform
+          hover:scale-110 transition-all duration-300 ease-in-out"
+              >
+                <a href="/portfolio" class="text-black">
+                  Portfolio
+                </a>
+                <i class="fas fa-chevron-right text-[12px]" />
+              </li>
+              <li
+                class="mx-2 flex gap-2 items-center hover:transform
+          hover:scale-110 transition-all duration-300 ease-in-out"
+              >
+                <a href="/contact" class="text-black">
+                  Contact
+                </a>
+                <i class="fas fa-chevron-right text-[12px]" />
+              </li>
+            </ul>
+          </div>
+        ) : null
+      }
+      <div class="w-full md:w-2/5">
+        <div>
+          <p class="text-primary font-bold text-lg">Services</p>
+          <div
+            class="w-4/5 h-1 border bg-gradient-to-r from-secondary to-white/25 border-none"
+          >
+          </div>
+          <div class="grid grid-cols-2 gap-4 text-gray-800 pt-4">
+            {
+              data.services.slice(0, 8).map((service) => (
+                <a
+                  class=" mb-2"
+                  href={`tel:+1${data.dataGeneral.phones[0].number}`}
+                >
+                  <span class=" text-[12px] text-primary mr-2">
+                    <i class="fa-solid fa-circle-small" />
+                  </span>
+                  <span class="text-gray-800">{service.title}</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+      <div class="w-full md:w-1/4">
+        <div>
+          <p class="text-primary font-bold text-lg">Contact Us</p>
+          <div
+            class="w-4/5 h-1 border bg-gradient-to-r from-secondary to-white/25 border-none"
+          >
+          </div>
+        </div>
+        {
+          data.dataGeneral.phones.length >= 0 ? (
+            <div class="flex items-center gap-2 pt-4">
+              <i class="fas fa-envelope text-white bg-primary p-2 text-[14px] rounded-md" />
+              <div class="flex flex-wrap gap-1">
+                {data.dataGeneral.location.slice(0, 4).map((map) => (
+                  <div>
+                    <p class="text-gray-800">{map.city}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null
+        }
+        {
+          data.dataGeneral.phones.length >= 0 ? (
+            <div>
+              {data.dataGeneral.phones.map((phone) => (
+                <div class="mb-2 flex gap-2 items-center pt-4">
+                  <i class="fas fa-phone text-white bg-primary p-2 text-[14px] rounded-md" />
+                  <a
+                    href={`tel:+1${phone.number}`}
+                    class="flex flex-col text-gray-800"
+                  >
+                    <span>
+                      {phone.number}{" "}
+                      {phone.title.length >= 0 ? (
+                        <span class="font-bold"> {phone.title}</span>
+                      ) : null}
+                    </span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          ) : null
+        }
+        {
+          data.dataGeneral.emails.length >= 0 ? (
+            <div>
+              {data.dataGeneral.emails.map((phone) => (
+                <div class="mb-2 flex gap-2 items-center pt-4">
+                  <i class="fas fa-envelope text-white bg-primary p-2 text-[14px] rounded-md" />
+                  <a
+                    href={`mailto:${phone.email}`}
+                    class="flex flex-col text-gray-800"
+                  >
+                    <span>{phone.email}</span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          ) : null
+        }
+      </div>
+    </div>
+    <div
+      class="w-4/5 mx-auto py-2 bg-gradient-to-b from-black to-slate-200/20 rounded-t-2xl flex flex-col md:flex-row justify-center md:justify-start items-center px-3 md:px-10"
+    >
+      <img
+        src={data.logos.secondary}
+        alt="logo"
+        class="w-full md:w-1/5 object-contain h-auto"
+      />
+      <div class="w-full md:w-4/5 flex flex-col px-0 md:px-4">
+        <div class="pb-8 hidden md:block">
+          <h2 class="text-white text-4xl font-black capitalize">
+            {data.slogan[6]}
+          </h2>
+        </div>
+        <div
+          class="flex flex-col md:flex-row gap-4 pt-2 border-t-2 border-white"
+        >
+          <div>
+            <p
+              class="md:text-start text-center text-white
+        text-base font-normal"
+            >
+              © {year} All rights reserved by {data.name}
+            </p>
+          </div>
+          {
+            data.redesSociales.length >= 0 ? (
+              <div class="flex justify-center gap-4">
+                {data.redesSociales.map((item) => {
+                  return (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      aria-label={item.name}
+                      class="flex justify-center items-center text-secondary"
+                    >
+                      <i class={`fa-brands fa-${item.icon}`} />
+                    </a>
+                  );
+                })}
+              </div>
+            ) : null
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
