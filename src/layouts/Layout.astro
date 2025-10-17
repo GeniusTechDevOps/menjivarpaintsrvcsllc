@@ -93,7 +93,7 @@ const isSubdomainNetlify = domain.includes("netlify.app");
       ) : (
         <>
           {
-            data.widgets.onePages ? <Header data={data} /> : null
+            data.widgets.onePages ? null : <Header data={data} />
           }
           <main>
             <slot />
