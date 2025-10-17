@@ -24,11 +24,11 @@ const year = new Date().getFullYear();
       class="w-4/5 mx-auto flex flex-col md:flex-row justify-center items-start gap-4 pb-5"
     >
       {
-        data.widgets.onePage ? (
+        data.widgets.onePages ? null : (
           <div class="w-full md:w-1/4">
             <div>
               <p class="text-primary font-bold text-lg">Navigation</p>
-              <div class="w-4/5 h-1 border bg-gradient-to-r from-secondary to-white/25 border-none"></div>
+              <div class="w-4/5 h-1 border bg-gradient-to-r from-secondary to-white/25 border-none" />
             </div>
 
             <ul class="list-none flex flex-col justify-center items-start text-black gap-6 font-bold flex-wrap pt-4">
@@ -70,7 +70,7 @@ const year = new Date().getFullYear();
               </li>
             </ul>
           </div>
-        ) : null
+        )
       }
       <div class="w-full md:w-2/5">
         <div>
